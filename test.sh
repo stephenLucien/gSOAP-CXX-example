@@ -1,5 +1,9 @@
 #!/bin/bash
 TOP_DIR=$(dirname $(realpath ${BASH_SOURCE}))
+BEAR=$(which bear)
+if test -n "$BEAR";then
+BEAR_APPEND="$BEAR --append"
+fi
 cd $TOP_DIR
 
 export CC=gcc
@@ -14,7 +18,8 @@ fi
 if test ! -e "$SOAPCPP2";then
     cd $GSOAP_SRC_DIR
     ./configure
-    make -j`nproc`
+    cd -
+    $BEAR_APPEND make -j`nproc` -C $GSOAP_SRC_DIR
     CODE=$?
     test 0 -ne $CODE && exit $CODE
 fi
@@ -30,4 +35,4 @@ make clean
 make gen_from_api_header
 # generate compile_commands.json if `bear` exists,
 # thus VSCode with clangd plugin will do a great job.
-$(which bear) make -j`nproc` all 
+$BEAR_APPEND make -j`nproc` all 
