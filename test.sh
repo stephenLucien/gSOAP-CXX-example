@@ -28,4 +28,6 @@ export BUILD_DIR=build
 
 make clean
 make gen_from_api_header
-make all
+# generate compile_commands.json if `bear` exists,
+# thus VSCode with clangd plugin will do a great job.
+$(which bear) make -j`nproc` all 
